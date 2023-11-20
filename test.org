@@ -1,0 +1,12 @@
+* Note 1
+[board :nid 1 :loc 1 10 :anc tc]
+Content for note 1
+
+* Note 2
+[board :nid 2 :loc 80 20 :anc tc :con 1]
+Content for note 2
+
+* Note 3
+[board :nid 3 :loc 30 30 :con 1]
+Content for note 3
+This note is longer than the others
