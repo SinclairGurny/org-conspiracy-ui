@@ -1,3 +1,5 @@
+* Non-display Note
+This is a bunch of text that would be visible if this note is displayed. But this note should not be displayed within org-conspiracy
 * Note 1
 [board :nid 1 :loc 1 10 :anc tc]
 Content for note 1

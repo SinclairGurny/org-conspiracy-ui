@@ -77,7 +77,9 @@ bool process_note_info(Note& note, const std::string& line) {
   int tmps;
   try {
     ss >> tmp;
-    assert(tmp == "[board");
+    if (tmp != "[board") {
+      return false;
+    }
     while (ss >> tmp) {
       if (tmp ==  ":nid" ) {
         ss >> tmps;
@@ -115,6 +117,11 @@ std::vector<Note*> read_org_file(const std::string& filename) {
   int mode = -1; // -1 nothing 0 top level header
   while (std::getline(orgfile, line)) {
     if (is_top_level_section(line)) {
+      if (mode == 1 && notes.size() > 0) {
+        Note* last = notes.back();
+        notes.pop_back();
+        delete last;
+      }
       Note* new_note = new Note;
       notes.push_back(new_note);
       new_note->title = get_title(line);
@@ -123,8 +130,13 @@ std::vector<Note*> read_org_file(const std::string& filename) {
     } else {
       if (mode == 1) {
         Note* curr_note = notes.back();
-        process_note_info(*curr_note, line);
-        mode = 2;
+        bool success = process_note_info(*curr_note, line);
+        if (!success) {
+          if (curr_note->content.size() > 0) { curr_note->content += "\n"; }
+          curr_note->content += line;
+        } else {
+          mode = 2;
+        }
       } else if (mode == 2) {
         Note* curr_note = notes.back();
         if (curr_note->content.size() > 0) { curr_note->content += "\n"; }
@@ -152,9 +164,9 @@ void get_connections(const Note& note,
     // Check if it already exists
     bool found = false;
     for (auto cn : connections) {
-      if ((note.id == cn.first && next == cn.second)) {// ||
-        //          (note.id == cn.second && next == cn.first)) {
-        //found = true;
+      if ((note.id == cn.first && next == cn.second) ||
+          (note.id == cn.second && next == cn.first)) {
+        found = true;
         break;
       }
     }
