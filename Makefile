@@ -17,6 +17,7 @@ sources := $(call rwildcard,src/,*.cpp)
 objects := $(patsubst src/%, $(buildDir)/%, $(patsubst %.cpp, %.o, $(sources)))
 depends := $(patsubst %.o, %.d, $(objects))
 compileFlags := -std=c++17 -I include
+compileFlagsDebug := -std=c++17 -I include -g
 linkFlags = -L lib/$(platform) -l raylib
 
 # Check for Windows
@@ -58,7 +59,12 @@ endif
 .PHONY: all setup submodules execute clean
 
 # Default target, compiles, executes and cleans
-all: $(target) execute
+all: build execute
+
+build: $(target)
+
+debug: compileFlags := $(compileFlagsDebug)
+debug: $(target) build
 
 # Sets up the project for compiling, generates includes and libs
 setup: include lib

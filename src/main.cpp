@@ -121,11 +121,12 @@ std::vector<Note*> read_org_file(const std::string& filename) {
       new_note->pos_x = new_note->pos_y = 0;
       mode = 1;
     } else {
-      Note* curr_note = notes.back();
       if (mode == 1) {
+        Note* curr_note = notes.back();
         process_note_info(*curr_note, line);
         mode = 2;
       } else if (mode == 2) {
+        Note* curr_note = notes.back();
         if (curr_note->content.size() > 0) { curr_note->content += "\n"; }
         curr_note->content += line;
       }
